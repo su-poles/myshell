@@ -1,0 +1,25 @@
+#!/bin/bash
+
+##############分发服务器设置##############
+server_1=10.222.138.201
+server_2=10.222.138.57
+server_3=10.222.138.13
+
+##############配置/etc/hosts#############
+echo "" >> /etc/hosts
+for((i=1;i<=3;i++));do
+key=server_${i}
+#-c表示输出匹配的个数, -n表示输出行号及其内容，如果行号不等于0，表示存在
+line=$(grep -n ${key} /etc/hosts | awk -F ':' '{print $2}' | head -1)
+ip=$(eval echo '$'"${key}")
+#字符串后面加上一个x,防止${line}出现空值时变成了if [ -ne ''];then 这种情况
+#判断是否相等时，-gt ，-lt，-eq 用来判断数字，字符串用=
+if [ "${line}"x != ''x ];then
+	#echo "替换: sed -i '${line}c ${ip} ${key}' /etc/hosts"
+	sed -i "${line}c ${ip} ${key}" /etc/hosts
+else
+	#echo "追加：${ip} ${key} >> /etc/hosts"
+	echo "${ip} ${key}" >> /etc/hosts
+fi
+done
+

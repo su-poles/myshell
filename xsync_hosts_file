@@ -1,0 +1,11 @@
+#!/bin/bash
+
+##############分发hosts文件##############
+server_ips=$(grep server_ /etc/hosts | awk '{print $1}')
+for server_ip in ${server_ips}
+do
+	echo "scp /etc/hosts poles@${server_ip}:/home/poles/"
+	scp /etc/hosts poles@${server_ip}:/home/poles
+	echo "ssh poles@${server_ip} \"sudo mv /home/poles/hosts /etc/hosts\""
+	ssh poles@${server_ip} "sudo mv -f /home/poles/hosts /etc/hosts"
+done
